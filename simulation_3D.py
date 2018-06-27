@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from functools import partial
+from lander.plot import plot_line_graph
 
 
 def euler(acc_func, pos_0, vel_0, t_array, dt):
@@ -8,9 +9,9 @@ def euler(acc_func, pos_0, vel_0, t_array, dt):
     position and velocity are 3-dimensional vectors"""
     
     #initiliase arrays
+    N = len(t_array)
     pos_array = np.empty(N)
     vel_array = np.empty(N)
-    N = len(t_array)
 
     #set BC's
     pos_array[0] = pos_0
@@ -56,12 +57,31 @@ def verlet(acc_func, pos_0, vel_0, t_array, dt):
 
 def acc(pos, G=6.67E-11, M=6.42E23):
     r = np.sqrt(pos.dot(pos))
-    acceleration = G * M * pos / (r ** 3)
+    acceleration = - (G * M * pos / (r ** 3))
     return acceleration  
 
 
 def run():
     """run script"""
+    
+    # simulation time, timestep and time
+    t_max = 100
+    dt = 0.1
+    t_arr = np.arange(0, t_max, dt)
+
+    # all start in same position (1000 km in x direction)
+    pos_0 = np.array([1E6, 0, 0]) 
+
+    # a) straight down descent
+    a_vel_0 = np.array([0,0,0])
+    a_pos_arr, a_vel_arr = verlet(acc, pos_0, a_vel_0, t_arr, dt)
+    plot_line_graph(t_arr, a_pos_arr[:][0], "Altitude", title="Altitude against time")
+
+
+
+    # b) circular orbit
+    # c) elliptic orbit
+    # d) hyperbolic escape
 
 
 if __name__ == "__main__":
