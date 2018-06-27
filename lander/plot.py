@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+
 def plot_line_graph(x_vals, data_vals_array, data_labels_array, title, fig_number=0, x_label="Time (s)"):
     """plot line graph
     can supply multiple lines to plot or just one
@@ -8,6 +9,10 @@ def plot_line_graph(x_vals, data_vals_array, data_labels_array, title, fig_numbe
     plt.title(title)
     plt.xlabel(x_label)
     plt.grid()
+
+    #emphasise zeros
+    plt.axhline(color='k')
+    plt.axvline(color='k')
     
     if(isinstance(data_vals_array, list) == False):
         # cast to list if not one already
