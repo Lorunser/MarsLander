@@ -61,44 +61,54 @@ def verlet(acc_func, pos_0, vel_0, t_array, dt):
     return pos_array, vel_array
 
 
-def acc(pos, G=6.67E-11, M=6.42E23):
+def acc(pos, G=6.67E-11, M=6.42E23, R=3.39E6):
     r = abs(np.linalg.norm(pos))
-    acceleration = - (G * M / (r ** 3)) * pos
-    #print(str(pos[0]) + " | " + str(acceleration[0]))
+
+    #assume tunnel going through Mars => correct enclosed mass
+    if r < R:
+        M = M * ((r / R) ** 3)
+
+    multiplier = - (G * M / (r ** 3))
+    acceleration = multiplier * pos
+
     return acceleration  
 
 
-def run():
+def run(use_verlet=True):
     """run script"""
+    if use_verlet == True:
+        sim = verlet
+    else:
+        sim = euler
     
     # simulation time, timestep and time
-    t_max = 1000
-    dt = 0.5
+    t_max = 5E4
+    dt = 10
     t_arr = np.arange(0, t_max, dt)
 
     # all start in same position (1000 km in x direction)
-    pos_0 = np.array([1E6, 0, 0]) 
+    pos_0 = np.array([10E6, 0, 0]) 
 
     # a) straight down descent
     a_vel_0 = np.array([0,0,0])
-    a_pos_arr, a_vel_arr = verlet(acc, pos_0, a_vel_0, t_arr, dt)
-    plot_line_graph(t_arr, a_pos_arr[:,0], "Altitude (m)", title="Altitude against time", fig_number=0)
+    a_pos_arr, a_vel_arr = sim(acc, pos_0, a_vel_0, t_arr, dt)
+    plot_line_graph(t_arr, a_pos_arr[:,0], "Altitude (m)", title="Straight down descent", fig_number=0)
 
     # b) elliptic orbit
-    b_vel_0 = np.array([0, 5E3, 0])
-    b_pos_arr, b_vel_arr = verlet(acc, pos_0, b_vel_0, t_arr, dt)
-    plot_line_graph(b_pos_arr[:,0], b_pos_arr[:,1], "y (m)", title="Elliptic orbit", fig_number=1, x_label="x (m)")
+    b_vel_0 = np.array([0, 1.7E3, 0])
+    b_pos_arr, b_vel_arr = sim(acc, pos_0, b_vel_0, t_arr, dt)
+    plot_line_graph(b_pos_arr[:,0], b_pos_arr[:,1], "y (m)", title="Elliptic orbit", fig_number=1, x_label="x (m)", plot_mars=True)
     
     # c) circular orbit
-    c_vel_0 = np.array([0, 7E3, 0])
-    c_pos_arr, c_vel_arr = verlet(acc, pos_0, c_vel_0, t_arr, dt)
-    plot_line_graph(c_pos_arr[:,0], c_pos_arr[:,1], "y (m)", title="Circular orbit", fig_number=2, x_label="x (m)")
+    c_vel_0 = np.array([0, 2.07E3, 0])
+    c_pos_arr, c_vel_arr = sim(acc, pos_0, c_vel_0, t_arr, dt)
+    plot_line_graph(c_pos_arr[:,0], c_pos_arr[:,1], "y (m)", title="Circular orbit", fig_number=2, x_label="x (m)", plot_mars=True)
 
 
     # d) hyperbolic escape
-    d_vel_0 = np.array([0, 11E3, 0])
-    d_pos_arr, d_vel_arr = verlet(acc, pos_0, d_vel_0, t_arr, dt)
-    plot_line_graph(d_pos_arr[:,0], d_pos_arr[:,1], "y (m)", title="Hyperbolic escape", fig_number=3, x_label="x (m)")
+    d_vel_0 = np.array([0, 3E3, 0])
+    d_pos_arr, d_vel_arr = sim(acc, pos_0, d_vel_0, t_arr, dt)
+    plot_line_graph(d_pos_arr[:,0], d_pos_arr[:,1], "y (m)", title="Hyperbolic escape", fig_number=3, x_label="x (m)", plot_mars=True)
 
     #show plots
     plt.show()
