@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from lander.plot import plot_line_graph
+from utils.plot import plot_line_graph
 
 
 def set_initials(pos_0, vel_0, t_array):
