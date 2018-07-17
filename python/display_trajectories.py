@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import os
 
 cwd = os.path.dirname(__file__)
-filename = os.path.join(cwd, 'c++', 'simulation-project', 'simulation-project', 'trajectories.txt')
+filename = os.path.join(cwd, '..', 'c++', 'simulation-project', 'simulation-project', 'trajectories.txt')
 results = np.loadtxt(filename)
 plt.figure(1)
 plt.clf()
