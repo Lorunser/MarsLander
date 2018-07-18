@@ -1,4 +1,4 @@
 ﻿  spring.cpp
-c:\users\ltray\documents\cambridge\lander\c++\spring.cpp(93): warning C4018: '<': signed/unsigned mismatch
+c:\users\ltray\documents\cambridge\lander\c++\spring.cpp(60): warning C4018: '<': signed/unsigned mismatch
   simulation-project.vcxproj -> C:\Users\ltray\Documents\Cambridge\lander\c++\simulation-project\Debug\simulation-project.exe
   simulation-project.vcxproj -> C:\Users\ltray\Documents\Cambridge\lander\c++\simulation-project\Debug\simulation-project.pdb (Partial PDB)

@@ -7,81 +7,48 @@ using namespace std;
 int main() {
 
   // declare variables
-  double m, k, x, v, t_max, dt, t, a;
-  vector<double> t_list, x_list, v_list;
+  double m, k, x0, v0, t0, t_max, dt;
 
   // mass, spring constant, initial position and velocity
   m = 1;
   k = 1;
-  x = 0;
-  v = 1;
+  x0 = 0;
+  v0 = 1;
+  t0 = 0;
 
   // simulation time and timestep
   t_max = 100;
   dt = 0.1;
 
-  // Euler integration
-  /*
-  for (t = 0; t <= t_max; t = t + dt) {
+  //initialise vectors
+  int N = int((t_max - t0) / dt);
+  vector<double> t_list(N), x_list(N), v_list(N);
 
-  // append current state to trajectories
-  t_list.push_back(t);
-  x_list.push_back(x);
-  v_list.push_back(v);
+  // set initials
+  t_list[0] = t0;
+  x_list[0] = x0;
+  v_list[0] = v0;
 
-  // calculate new position and velocity
-  a = -k * x / m;
-  x = x + dt * v;
-  v = v + dt * a;
+  //set x[1]
+  x_list[1] = x0 + v0 * dt;
 
-  }
-  */
-
-
-  //verlet integration
-  int n = 1;
-
-  // append current state to trajectories
-  t_list.push_back(t);
-  x_list.push_back(x);
-  v_list.push_back(v);
-
-
-  for (t = dt; t <= t_max; t = t + dt) {
+  //perform verlet
+  double ai;
+  for (int i = 1; i < N - 1; i++) {
+	  //times
+	  t_list[i] = t0 + dt * i;
 	  
-	  //always push t
-	  t_list.push_back(t);
+	  //positions
+	  ai = -k * x_list[i] / m;
+	  x_list[i+1] = 2 * x_list[i] - x_list[i - 1] + (dt * dt) * ai;
 
-	  if (n == 1)
-	  {
-		  // calculate x[1]
-		  x = x + v * dt;
-		  x_list.push_back(x);
-
-		  //do not push v >> one behind always
-	  }
-
-	  else
-	  {
-		  //calculate a[n-1]
-		  a = -k * x_list[n-1] / m;
-
-		  //calculate v[n]
-		  x = 2 * x_list[n-1] - x_list[n - 2] + (dt * dt) * a;
-		  x_list.push_back(x);
-
-		  //calculate v[n-1]
-		  v = (x_list[n] - x_list[n - 2]) / (2 * dt);
-		  v_list.push_back(v);
-	  }
-
-	  n++;
+	  //velocities
+	  v_list[i] = (x_list[i + 1] - x_list[i - 1]) / (2 * dt);
   }
 
-  // one-sided estimate for final v[n]
-  int N = n; // size of array
-  v = (x_list[N-1] - x_list[N-2]) / dt;
-  v_list.push_back(v);
+  //one sided estimate for vinal v
+  v_list[N - 1] = (x_list[N - 1] - x_list[N - 2]) / dt;
+  t_list[N - 1] = t_list[N - 2] + dt;
 
 
   // Write the trajectories to file
